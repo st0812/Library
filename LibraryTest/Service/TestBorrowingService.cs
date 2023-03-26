@@ -34,14 +34,14 @@ namespace LibraryTest
 
 
             //データの作成
-            Library.Add(new Book("a", Status.Shelf));//本aを本棚
-            Library.Add(new Book("b", Status.Rentaled));//本bを貸出済み
-            Library.Add(new Book("c", Status.Backyard));//本bを貸出済み
+            Library.Add(new Book("a", BookStatus.OnShelf));//本aを本棚
+            Library.Add(new Book("b", BookStatus.Rented));//本bを貸出済み
+            Library.Add(new Book("c", BookStatus.InStorage));//本bを貸出済み
 
             var time = DateTime.Parse("2020/03/10");
-            Transactions.Add(new Transaction("userX", "b", time, time + BorrowingService.RentalTime));//本bの貸出情報
+            Transactions.Add(new BookReturnAgreement("userX", "b", time, time + BorrowingService.DefaultLoanSpan));//本bの貸出情報
 
-            Reserves.Add(new Reservation("user2", "c", DateTime.Parse("2020/03/20")));//本cの予約
+            Reserves.Add(new BookReservation("user2", "c", DateTime.Parse("2020/03/20")));//本cの予約
         }
 
         [TestMethod]
@@ -50,32 +50,32 @@ namespace LibraryTest
             LendingService.Borrow("user", "a", DateTime.Parse("2020/04/05"));
             
             
-            Assert.AreEqual(Status.Rentaled, Library.Books.Where(book => book.ID == "a").First().Status);
+            Assert.AreEqual(BookStatus.Rented, Library.Books.Where(book => book.Id == "a").First().BookStatus);
             
             var tran = Transactions.Transactions.Where(transaction=>transaction.BookID=="a").First();
             Assert.AreEqual("user", tran.UserID);
             Assert.AreEqual("a", tran.BookID);
-            Assert.AreEqual(DateTime.Parse("2020/04/05"), tran.CheckOutDate);
-            Assert.AreEqual(DateTime.Parse("2020/04/05")+BorrowingService.RentalTime, tran.DueDate);
+            Assert.AreEqual(DateTime.Parse("2020/04/05"), tran.CheckoutDate);
+            Assert.AreEqual(DateTime.Parse("2020/04/05")+BorrowingService.DefaultLoanSpan, tran.DueDate);
         }
 
         [TestMethod]
         public void TestGetTransactionsBy()
         {
-            var transaction = LendingService.GetTransactionsBy("userX").First();
+            var transaction = LendingService.GetReturnAgreementsBy("userX").First();
             Assert.AreEqual("b", transaction.BookID);
         }
 
         [TestMethod]
         public void TestLend_Exception()
         {
-            Assert.ThrowsException<LendingException>(()=>LendingService.Borrow("user", "b", DateTime.Parse("2020/04/05")));
+            Assert.ThrowsException<BorrowingException>(()=>LendingService.Borrow("user", "b", DateTime.Parse("2020/04/05")));
         }
 
         [TestMethod]
         public void TestLend_Exception2()
         {
-            Assert.ThrowsException<LendingException>(() => LendingService.Borrow("userX", "a", DateTime.Parse("2020/04/05")));
+            Assert.ThrowsException<BorrowingException>(() => LendingService.Borrow("userX", "a", DateTime.Parse("2020/04/05")));
         }
 
     }

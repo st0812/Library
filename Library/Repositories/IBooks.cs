@@ -11,9 +11,9 @@ namespace Library
     public interface IBooks
     {
         void Add(Book book);
-        void UpdateStatus(string id, Status status);
-        Status QueryStatus(string id);
+        void UpdateStatus(string id, BookStatus status);
+        BookStatus QueryStatus(string id);
 
-        List<Book> GetBooksInBackYard();
+        List<Book> FindBooksInStorage();
     }
 }

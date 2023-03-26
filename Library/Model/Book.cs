@@ -6,22 +6,22 @@ using System.Threading.Tasks;
 
 namespace Library.Model
 {
-    public enum Status
+    public enum BookStatus
     {
-        Shelf,
-        Backyard,
-        Rentaled,
-        Missing
+        OnShelf,
+        InStorage,
+        Rented,
+        Lost
     }
     public class Book
     {
-        public string ID { get;  }= Guid.NewGuid().ToString();
-        public Status Status { get;}= Status.Shelf;
+        public string Id { get;  }= Guid.NewGuid().ToString();
+        public BookStatus BookStatus { get;}= BookStatus.OnShelf;
 
-        public Book(string id, Status status)
+        public Book(string id, BookStatus status)
         {
-            ID = id;
-            Status = status;
+            Id = id;
+            BookStatus = status;
         }
         public Book()
         {

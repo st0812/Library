@@ -9,10 +9,10 @@ using Library.Model;
 
 namespace Library
 {
-    public class DummyHistories : IHistories
+    public class DummyHistories : ICheckoutHistories
     {
-        public List<History> Items = new List<History>();
-        public void Add(History item)
+        public List<CheckoutHistory> Items = new List<CheckoutHistory>();
+        public void Add(CheckoutHistory item)
         {
             Items.Add(item);
         }

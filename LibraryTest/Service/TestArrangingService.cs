@@ -34,53 +34,53 @@ namespace LibraryTest
 
 
             //データの作成
-            Library.Add(new Book("a", Status.Shelf));//本aを本棚
-            Library.Add(new Book("b", Status.Rentaled));//本bを貸出済み
-            Library.Add(new Book("c", Status.Backyard));//本dをバックヤードに
-            Library.Add(new Book("d", Status.Backyard));//本dをバックヤードに
-            Library.Add(new Book("e", Status.Shelf));//本eを本棚
+            Library.Add(new Book("a", BookStatus.OnShelf));//本aを本棚
+            Library.Add(new Book("b", BookStatus.Rented));//本bを貸出済み
+            Library.Add(new Book("c", BookStatus.InStorage));//本dをバックヤードに
+            Library.Add(new Book("d", BookStatus.InStorage));//本dをバックヤードに
+            Library.Add(new Book("e", BookStatus.OnShelf));//本eを本棚
 
             var time = DateTime.Parse("2020/03/10");
-            Transactions.Add(new Transaction("userX", "b", time, time + BorrowingService.RentalTime));//本bの貸出情報
+            Transactions.Add(new BookReturnAgreement("userX", "b", time, time + BorrowingService.DefaultLoanSpan));//本bの貸出情報
 
-            Reserves.Add(new Reservation("user2", "c", DateTime.Parse("2020/03/20")));//本cの予約
-            Reserves.Add(new Reservation("user2", "e", DateTime.Parse("2020/03/20")));//本cの予約
+            Reserves.Add(new BookReservation("user2", "c", DateTime.Parse("2020/03/20")));//本cの予約
+            Reserves.Add(new BookReservation("user2", "e", DateTime.Parse("2020/03/20")));//本cの予約
         }
 
         [TestMethod]
         public void TestBackToShelve()
         {
             RackingService.PutToShelf("d");
-            Assert.AreEqual(Status.Shelf, Library.Books.Where(book => book.ID == "d").First().Status);
+            Assert.AreEqual(BookStatus.OnShelf, Library.Books.Where(book => book.Id == "d").First().BookStatus);
            
         }
 
         [TestMethod]
         public void TestPick()
         {
-            RackingService.PickToBackyard("a");
-            Assert.AreEqual(Status.Backyard, Library.Books.Where(book => book.ID == "a").First().Status);
+            RackingService.PickToStorage("a");
+            Assert.AreEqual(BookStatus.InStorage, Library.Books.Where(book => book.Id == "a").First().BookStatus);
         }
         [TestMethod]
 
         public void TestGetBooksToTakeToBackyard()
         {
             Assert.AreEqual("e",
-                RackingService.GetBooksToPickToBackyard().First());
+                RackingService.FindBooksToPickToStorage().First());
         }
         [TestMethod]
 
         public void TestBooksToTakeToShelves()
         {
             Assert.AreEqual("d",
-               RackingService.GetBooksToPutToShelf().First());
+               RackingService.FindBooksToPutToShelf().First());
         }
 
 
         [TestMethod]
         public void TestBackToShelve_Exception()
         {
-            Assert.ThrowsException<RackingException>(
+            Assert.ThrowsException<ArrangingException>(
                 () => RackingService.PutToShelf("c")
                 );
         }
@@ -88,7 +88,7 @@ namespace LibraryTest
            [TestMethod]
         public void TestBackToShelve_Exception2()
         {
-            Assert.ThrowsException<RackingException>(
+            Assert.ThrowsException<ArrangingException>(
                 () => RackingService.PutToShelf("b")
                 );
         }
@@ -98,8 +98,8 @@ namespace LibraryTest
         [TestMethod]
         public void TestPick_Exception2()
         {
-            Assert.ThrowsException<RackingException>(
-                () => RackingService.PickToBackyard("b")
+            Assert.ThrowsException<ArrangingException>(
+                () => RackingService.PickToStorage("b")
                 );
         }
 

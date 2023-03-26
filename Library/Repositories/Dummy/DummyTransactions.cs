@@ -9,10 +9,10 @@ using Library.Model;
 
 namespace Library
 {
-    public class DummyTransactions : ITransactions
+    public class DummyTransactions : IBookReturnAgreements
     {
-        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
-        public void Add(Transaction transaction)
+        public List<BookReturnAgreement> Transactions { get; set; } = new List<BookReturnAgreement>();
+        public void Add(BookReturnAgreement transaction)
         {
             Transactions.Add(transaction);
         }
@@ -24,25 +24,25 @@ namespace Library
         }
 
 
-        public List<Transaction> FindOverdues(DateTime dateTime)
+        public List<BookReturnAgreement> FindOverdues(DateTime dateTime)
         {
             return Transactions.Where(tran => tran.DueDate < dateTime).ToList();
         }
 
-        public List<Transaction> FindOverduesBy(string userID,DateTime dateTime)
+        public List<BookReturnAgreement> FindOverduesBy(string userID,DateTime dateTime)
         {
             return Transactions
                 .Where(tran=>tran.UserID==userID)
-                .Where(tran => tran.IsDelayed(dateTime))
+                .Where(tran => tran.IsOverdue(dateTime))
                 .ToList();
         }
 
-        public Transaction Get(string bookID)
+        public BookReturnAgreement Get(string bookID)
         {
             return Transactions.Where(tran => tran.BookID == bookID).First();
         }
 
-        public List<Transaction> GetTransactionsBy(string userID)
+        public List<BookReturnAgreement> GetTransactionsBy(string userID)
         {
             return Transactions.Where(tran => tran.UserID == userID).ToList();
         }

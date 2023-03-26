@@ -7,19 +7,19 @@ using Library.Model;
 
 namespace Library.Service
 {
-    public class LendingException:Exception
+    public class BorrowingException:Exception
     {
-        public LendingException()
+        public BorrowingException()
         {
 
         }
 
-        public LendingException(string message) : base(message)
+        public BorrowingException(string message) : base(message)
         {
 
         }
 
-        public LendingException(string message, Exception inner):base(message,inner)
+        public BorrowingException(string message, Exception inner):base(message,inner)
         {
 
         }
@@ -27,27 +27,33 @@ namespace Library.Service
 
     public class BorrowingService
     {
-        public static TimeSpan RentalTime { get; } = new TimeSpan(14, 0, 0, 0, 0);
+        public static TimeSpan DefaultLoanSpan { get; } = new TimeSpan(14, 0, 0, 0, 0);
         private IBooks Books { get; }
-        private ITransactions Transactions { get; }
+        private IBookReturnAgreements Transactions { get; }
 
-        public BorrowingService(IBooks library, ITransactions transactions)
+        public BorrowingService(IBooks library, IBookReturnAgreements transactions)
         {
             Books = library;
             Transactions = transactions;
         }
 
+        public void Borrow(string userID, string bookID, DateTime dateTime,TimeSpan loadSpan)
+        {
+            if (Books.QueryStatus(bookID)!=BookStatus.OnShelf && Books.QueryStatus(bookID) != BookStatus.InStorage) throw new BorrowingException("本が貸出可能な状態ではありません。");
+            if (Transactions.FindOverduesBy(userID,dateTime).Any()) throw new BorrowingException("返却遅延している本があります");
+            Transactions.Add(new BookReturnAgreement(userID, bookID, dateTime, dateTime+loadSpan));
+            Books.UpdateStatus(bookID, BookStatus.Rented);
+        }
+
         public void Borrow(string userID, string bookID, DateTime dateTime)
         {
-            if (Books.QueryStatus(bookID)!=Status.Shelf && Books.QueryStatus(bookID) != Status.Backyard) throw new LendingException("本が貸出可能な状態ではありません。");
-            if (Transactions.FindOverduesBy(userID,dateTime).Count()!=0) throw new LendingException("返却遅延している本があります");
-            Transactions.Add(new Transaction(userID, bookID, dateTime, dateTime+RentalTime));
-            Books.UpdateStatus(bookID, Status.Rentaled);
+            Borrow(userID, bookID, dateTime, DefaultLoanSpan);
         }
 
 
 
-        public List<Transaction> GetTransactionsBy(string userID)
+
+        public List<BookReturnAgreement> GetReturnAgreementsBy(string userID)
         {
             return Transactions.GetTransactionsBy(userID);
         }

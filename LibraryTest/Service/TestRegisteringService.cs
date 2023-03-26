@@ -33,9 +33,9 @@ namespace UnitTest.ServiceUnitTest
 
 
             //データの作成
-            Library.Add(new Book("a", Status.Shelf));//本aを本棚
-            Library.Add(new Book("b", Status.Rentaled));//本bを貸出済み
-            Library.Add(new Book("c", Status.Backyard));//本bを貸出済み
+            Library.Add(new Book("a", BookStatus.OnShelf));//本aを本棚
+            Library.Add(new Book("b", BookStatus.Rented));//本bを貸出済み
+            Library.Add(new Book("c", BookStatus.InStorage));//本bを貸出済み
 
         }
 

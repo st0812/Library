@@ -8,9 +8,9 @@ using Library.Model;
 
 namespace Library
 {
-    public interface IHistories
+    public interface ICheckoutHistories
     {
-        void Add(History history);
+        void Add(CheckoutHistory history);
 
     }
 }

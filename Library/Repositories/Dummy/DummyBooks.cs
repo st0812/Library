@@ -18,20 +18,20 @@ namespace Library
             Books.Add(book);
         }
 
-        public List<Book> GetBooksInBackYard()
+        public List<Book> FindBooksInStorage()
         {
-            return Books.Where(book => book.Status == Status.Backyard).ToList();
+            return Books.Where(book => book.BookStatus == BookStatus.InStorage).ToList();
         }
 
-        public Status QueryStatus(string id)
+        public BookStatus QueryStatus(string id)
         {
-            return Books.First(book => book.ID == id).Status;
+            return Books.First(book => book.Id == id).BookStatus;
         }
 
-        public void UpdateStatus(string id, Status status)
+        public void UpdateStatus(string id, BookStatus status)
         {
-            var book= Books.First(book => book.ID == id);
-            var books2 = new Book(book.ID, status);
+            var book= Books.First(book => book.Id == id);
+            var books2 = new Book(book.Id, status);
             Books.Remove(book);
             Books.Add(books2);
         }

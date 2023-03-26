@@ -7,19 +7,19 @@ using Library.Model;
 
 namespace Library.Service
 {
-    public class RackingException:Exception
+    public class ArrangingException:Exception
     {
-        public RackingException()
+        public ArrangingException()
         {
 
         }
 
-        public RackingException(string message) : base(message)
+        public ArrangingException(string message) : base(message)
         {
 
         }
 
-        public RackingException(string message, Exception inner) : base(message, inner)
+        public ArrangingException(string message, Exception inner) : base(message, inner)
         {
 
 
@@ -28,9 +28,9 @@ namespace Library.Service
     public class ArrangingService
     {
         private IBooks Books { get; }
-        private IReservations Reservations { get; }
+        private IBookReservations Reservations { get; }
 
-        public ArrangingService(IBooks books,IReservations reservations)
+        public ArrangingService(IBooks books,IBookReservations reservations)
         {
             Books = books;
             Reservations = reservations;
@@ -38,32 +38,32 @@ namespace Library.Service
 
         public void PutToShelf(string bookID)
         {
-            if (Reservations.Exists(bookID)) throw new RackingException("予約中の本です");
-            if (Books.QueryStatus(bookID) == Status.Rentaled) throw new RackingException("貸出中となっています。");
-            Books.UpdateStatus(bookID, Status.Shelf);
+            if (Reservations.Exists(bookID)) throw new ArrangingException("予約中の本です");
+            if (Books.QueryStatus(bookID) == BookStatus.Rented) throw new ArrangingException("貸出中となっています。");
+            Books.UpdateStatus(bookID, BookStatus.OnShelf);
 
         }
-        public void PickToBackyard(string bookID)
+        public void PickToStorage(string bookID)
         {
-            if (Books.QueryStatus(bookID) == Status.Rentaled) throw new RackingException("貸出中となっています。");
-            Books.UpdateStatus(bookID, Status.Backyard);
+            if (Books.QueryStatus(bookID) == BookStatus.Rented) throw new ArrangingException("貸出中となっています。");
+            Books.UpdateStatus(bookID, BookStatus.InStorage);
         }
 
 
-        public List<string> GetBooksToPickToBackyard()
+        public List<string> FindBooksToPickToStorage()
         {
             return Reservations.GetPrimeReserves()
-                .Where(reserve => Books.QueryStatus(reserve.BookID) == Status.Shelf)
+                .Where(reserve => Books.QueryStatus(reserve.BookID) == BookStatus.OnShelf)
                 .Select(reserve=>reserve.BookID)
                 .ToList();
         }
 
 
-        public List<string> GetBooksToPutToShelf()
+        public List<string> FindBooksToPutToShelf()
         {
-            return Books.GetBooksInBackYard()
-                .Where(book => !Reservations.Exists(book.ID))
-                .Select(book=>book.ID)
+            return Books.FindBooksInStorage()
+                .Where(book => !Reservations.Exists(book.Id))
+                .Select(book=>book.Id)
                 .ToList();
         }
 

@@ -6,34 +6,34 @@ using System.Threading.Tasks;
 
 namespace Library.Model
 {
-    public class Transaction
+    public class BookReturnAgreement
     {
         public string ID { get; } = Guid.NewGuid().ToString();
         public string UserID { get;  }
         public string BookID { get; }
-        public DateTime CheckOutDate { get;  }
+        public DateTime CheckoutDate { get;  }
         public DateTime DueDate { get;  }
 
 
-        public Transaction(string userID, string bookID,DateTime checkOutDate, DateTime dueDate)
+        public BookReturnAgreement(string userID, string bookID,DateTime checkoutDate, DateTime dueDate)
         {
             UserID = userID;
             BookID = bookID;
-            CheckOutDate = checkOutDate;
+            CheckoutDate = checkoutDate;
             DueDate = dueDate;
         }
-        public Transaction(string iD, string userID, string bookID, DateTime checkOutDate, DateTime dueDate)
+        public BookReturnAgreement(string iD, string userID, string bookID, DateTime checkOutDate, DateTime dueDate)
         {
             ID = iD;
             UserID = userID;
             BookID = bookID;
-            CheckOutDate = checkOutDate;
+            CheckoutDate = checkOutDate;
             DueDate = dueDate;
         }
 
-        public bool IsDelayed(DateTime dateTime)
+        public bool IsOverdue(DateTime currentDateTime)
         {
-            return DueDate < dateTime;
+            return DueDate < currentDateTime;
         }
     }
 }

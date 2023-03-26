@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Library
 {
-    public class DummyReservations : IReservations
+    public class DummyReservations : IBookReservations
     {
-        public List<Reservation> Reserves { get; set; } = new List<Reservation>();
+        public List<BookReservation> Reserves { get; set; } = new List<BookReservation>();
       
-        public void Add(Reservation reserve)
+        public void Add(BookReservation reserve)
         {
             Reserves.Add(reserve);
         }
@@ -28,22 +28,22 @@ namespace Library
             return Reserves.Where(reserve => reserve.BookID == bookID).Count() != 0;
         }
 
-        public Reservation Get(string reserveID)
+        public BookReservation Get(string reserveID)
         {
-            return Reserves.Where(reserve => reserve.ID == reserveID).First();
+            return Reserves.Where(reserve => reserve.ReservationId == reserveID).First();
         }
 
-        public List<Reservation> GetPrimeReserves()
+        public List<BookReservation> GetPrimeReserves()
         {
-            return new List<Reservation>(Reserves);
+            return new List<BookReservation>(Reserves);
         }
 
-        public List<Reservation> GetReserves(string bookID)
+        public List<BookReservation> GetReserves(string bookID)
         {
             return Reserves.Where(reserve => reserve.BookID == bookID).ToList();
         }
 
-        public List<Reservation> GetReservesBy(string userID)
+        public List<BookReservation> FindReservationsBy(string userID)
         {
             return Reserves.Where(reserve => reserve.UserID==userID).ToList();
 

@@ -27,35 +27,35 @@ namespace Library.Service
         }
     }
 
-    public class ReservingService
+    public class ReservationService
     {
-        private IReservations Reservations;
-        private ITransactions Transactions;
+        private readonly IBookReservations Reservations;
+        private readonly IBookReturnAgreements Agreements;
 
-        public ReservingService(IReservations reserves,ITransactions transactions)
+        public ReservationService(IBookReservations reserves,IBookReturnAgreements agreements)
         {
             Reservations = reserves;
-            Transactions = transactions;
+            Agreements = agreements;
         }
 
-        public void Reserve(string bookID, string userID,DateTime dateTime)
+        public void ReserveBook(string bookID, string userID,DateTime reserveDate)
         {
-            if (Transactions.FindOverduesBy(userID,dateTime).Count() != 0) throw new ReservingException("延滞本があります。");
-            Reservations.Add(new Reservation(userID, bookID, dateTime));
+            if (Agreements.FindOverduesBy(userID,reserveDate).Any()) throw new ReservingException("延滞本があります。");
+            Reservations.Add(new BookReservation(userID, bookID, reserveDate));
         }
 
-        public List<Reservation> GetReservesBy(string userID)
+        public List<BookReservation> FindReservationsBy(string userID)
         {
-            return Reservations.GetReservesBy(userID);
+            return Reservations.FindReservationsBy(userID);
         }
-
        
 
-        public void Cancel(string id)
+        public void CancelReservation(string reservationID)
         {
-            var reserve = Reservations.Get(id);
-            Reservations.Delete(id);
+            Reservations.Delete(reservationID);
         }
 
     }
+
+
 }
