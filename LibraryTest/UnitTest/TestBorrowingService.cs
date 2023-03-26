@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Model;
 using Library;
+using Library.Repositories.Dummy;
 
 namespace LibraryTest
 {
@@ -14,9 +15,9 @@ namespace LibraryTest
     public class TestBorrowingService
     {
         public DummyBooks Library { get; set; }
-        public DummyReservations Reserves { get; set; }
-        public DummyHistories History { get; set; }
-        public DummyTransactions Transactions { get; set; }
+        public DummyBookReservations Reserves { get; set; }
+        public DummyCheckoutHistories History { get; set; }
+        public DummyBookReturnAgreements Transactions { get; set; }
 
         public BorrowingService LendingService { get; set; }
        
@@ -25,9 +26,9 @@ namespace LibraryTest
         {
             //データの初期化
             Library = new DummyBooks();
-            Reserves = new DummyReservations();
-            History = new DummyHistories();
-            Transactions = new DummyTransactions();
+            Reserves = new DummyBookReservations();
+            History = new DummyCheckoutHistories();
+            Transactions = new DummyBookReturnAgreements();
 
             //サービスの初期化
             LendingService = new BorrowingService(Library,Transactions);

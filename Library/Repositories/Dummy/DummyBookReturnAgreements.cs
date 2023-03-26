@@ -1,5 +1,4 @@
 ﻿using Library;
-using Library.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Library.Model;
 
-namespace Library
+namespace Library.Repositories.Dummy
 {
-    public class DummyTransactions : IBookReturnAgreements
+    public class DummyBookReturnAgreements : IBookReturnAgreements
     {
         public List<BookReturnAgreement> Transactions { get; set; } = new List<BookReturnAgreement>();
         public void Add(BookReturnAgreement transaction)
@@ -42,7 +41,7 @@ namespace Library
             return Transactions.Where(tran => tran.BookID == bookID).First();
         }
 
-        public List<BookReturnAgreement> GetTransactionsBy(string userID)
+        public List<BookReturnAgreement> GetAgreementsBy(string userID)
         {
             return Transactions.Where(tran => tran.UserID == userID).ToList();
         }

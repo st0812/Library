@@ -1,5 +1,6 @@
 ﻿using Library;
 using Library.Model;
+using Library.Repositories.Dummy;
 using Library.Service;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,9 @@ namespace LibraryTest
     {
 
         public DummyBooks Library { get; set; }
-        public DummyReservations Reserves { get; set; }
-        public DummyHistories History { get; set; }
-        public DummyTransactions Transactions { get; set; }
+        public DummyBookReservations Reserves { get; set; }
+        public DummyCheckoutHistories History { get; set; }
+        public DummyBookReturnAgreements Transactions { get; set; }
 
         public ArrangingService RackingService { get; set; }
 
@@ -25,9 +26,9 @@ namespace LibraryTest
         {
             //データの初期化
             Library = new DummyBooks();
-            Reserves = new DummyReservations();
-            History = new DummyHistories();
-            Transactions = new DummyTransactions();
+            Reserves = new DummyBookReservations();
+            History = new DummyCheckoutHistories();
+            Transactions = new DummyBookReturnAgreements();
 
             //サービスの初期化
             RackingService = new ArrangingService(Library,Reserves);

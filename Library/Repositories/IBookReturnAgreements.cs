@@ -1,12 +1,11 @@
-﻿using Library.Model.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Model;
 
-namespace Library
+namespace Library.Repositories
 {
     public interface IBookReturnAgreements
     {
@@ -15,7 +14,7 @@ namespace Library
 
         BookReturnAgreement Get(string bookID);
 
-        List<BookReturnAgreement> GetTransactionsBy(string userID);
+        List<BookReturnAgreement> GetAgreementsBy(string userID);
 
         List<BookReturnAgreement> FindOverdues(DateTime dateTime);
 

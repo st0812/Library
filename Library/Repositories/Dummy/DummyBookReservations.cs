@@ -1,5 +1,6 @@
 ﻿using Library;
 using Library.Model;
+using Library.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library
+namespace Library.Repositories.Dummy
 {
-    public class DummyReservations : IBookReservations
+    public class DummyBookReservations : IBookReservations
     {
         public List<BookReservation> Reserves { get; set; } = new List<BookReservation>();
       
@@ -20,7 +21,7 @@ namespace Library
 
         public void Delete(string reserveID)
         {
-            Reserves.Remove(Get(reserveID));
+            Reserves.Remove(Find(reserveID));
         }
 
         public bool Exists(string bookID)
@@ -28,17 +29,17 @@ namespace Library
             return Reserves.Where(reserve => reserve.BookID == bookID).Count() != 0;
         }
 
-        public BookReservation Get(string reserveID)
+        public BookReservation Find(string reserveID)
         {
             return Reserves.Where(reserve => reserve.ReservationId == reserveID).First();
         }
 
-        public List<BookReservation> GetPrimeReserves()
+        public List<BookReservation> GetOlderReservations(int limit)
         {
-            return new List<BookReservation>(Reserves);
+            return Reserves.GetRange(0,Math.Min(limit,Reserves.Count));
         }
 
-        public List<BookReservation> GetReserves(string bookID)
+        public List<BookReservation> FindReservationsOf(string bookID)
         {
             return Reserves.Where(reserve => reserve.BookID == bookID).ToList();
         }

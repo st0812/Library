@@ -5,17 +5,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library
+namespace Library.Repositories
 {
     public interface IBookReservations
     {
         void Add(BookReservation reserve);
         void Delete(string reserveID);
         bool Exists(string bookID);
-        List<BookReservation> GetReserves(string bookID);
+        List<BookReservation> FindReservationsOf(string bookID);
 
         List<BookReservation> FindReservationsBy(string userID);
-        List<BookReservation> GetPrimeReserves();
-        BookReservation Get(string reserveID);
+        List<BookReservation> GetOlderReservations(int limit);
+        BookReservation Find(string reserveID);
     }
 }

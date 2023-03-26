@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Library.Repositories.Dummy;
 
 namespace UnitTest.ServiceUnitTest
 {
@@ -13,9 +14,9 @@ namespace UnitTest.ServiceUnitTest
     public class TestRegisteringService
     {
         public DummyBooks Library { get; set; }
-        public DummyReservations Reserves { get; set; }
-        public DummyHistories History { get; set; }
-        public DummyTransactions Transactions { get; set; }
+        public DummyBookReservations Reserves { get; set; }
+        public DummyCheckoutHistories History { get; set; }
+        public DummyBookReturnAgreements Transactions { get; set; }
 
         public RegisteringService RegisterBookService { get; set; }
 
@@ -24,9 +25,9 @@ namespace UnitTest.ServiceUnitTest
         {
             //データの初期化
             Library = new DummyBooks();
-            Reserves = new DummyReservations();
-            History = new DummyHistories();
-            Transactions = new DummyTransactions();
+            Reserves = new DummyBookReservations();
+            History = new DummyCheckoutHistories();
+            Transactions = new DummyBookReturnAgreements();
 
             //サービスの初期化
             RegisterBookService = new RegisteringService(Library);

@@ -1,13 +1,12 @@
 ﻿using Library;
 using Library.Model;
-using Library.Model.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Library
+namespace Library.Repositories.Dummy
 {
     public class DummyBooks : IBooks
     {
@@ -16,6 +15,11 @@ namespace Library
         public void Add(Book book)
         {
             Books.Add(book);
+        }
+
+        public List<Book> FindBooks()
+        {
+            return new List<Book>(Books);
         }
 
         public List<Book> FindBooksInStorage()

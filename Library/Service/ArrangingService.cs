@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Model;
+using Library.Repositories;
 
 namespace Library.Service
 {
@@ -45,14 +46,18 @@ namespace Library.Service
         }
         public void PickToStorage(string bookID)
         {
-            if (Books.QueryStatus(bookID) == BookStatus.Rented) throw new ArrangingException("貸出中となっています。");
+            if (Books.QueryStatus(bookID) == BookStatus.Rented)
+            {
+                throw new ArrangingException("貸出中となっています。");
+            }
+
             Books.UpdateStatus(bookID, BookStatus.InStorage);
         }
 
 
         public List<string> FindBooksToPickToStorage()
         {
-            return Reservations.GetPrimeReserves()
+            return Reservations.GetOlderReservations(10)
                 .Where(reserve => Books.QueryStatus(reserve.BookID) == BookStatus.OnShelf)
                 .Select(reserve=>reserve.BookID)
                 .ToList();

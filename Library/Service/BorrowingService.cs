@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Library.Model;
+using Library.Repositories;
 
 namespace Library.Service
 {
@@ -55,7 +56,7 @@ namespace Library.Service
 
         public List<BookReturnAgreement> GetReturnAgreementsBy(string userID)
         {
-            return Transactions.GetTransactionsBy(userID);
+            return Transactions.GetAgreementsBy(userID);
         }
     }
 }

@@ -1,22 +1,19 @@
 ﻿using Library;
 using Library.Model;
+using Library.Repositories;
 using Library.Service;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 
-namespace LibraryTest
+namespace UnitTest
 {
-    [TestClass]
-    public class UserBorrowBooks
+    public class Scenerio
     {
-        public DummyBooks Library { get; set; }
-        public DummyReservations Reserves { get; set; }
-        public DummyHistories History { get; set; }
-        public DummyTransactions Transactions { get; set; }
-
+        public IBooks Library { get; }
         public RegisteringService RegisterService { get; set; }
         public BorrowingService LendingService { get; set; }
         public ArrangingService RackingService { get; set; }
@@ -25,39 +22,27 @@ namespace LibraryTest
 
 
 
-        public List<Book> Books { get; set; }
-
-        [TestInitialize]
-        public void Initialize()
+        public Scenerio(IBooks library, IBookReservations reserves, ICheckoutHistories histories, IBookReturnAgreements agreements)
         {
-            //データの初期化
-            Library = new DummyBooks();
-            Reserves = new DummyReservations();
-            History = new DummyHistories();
-            Transactions = new DummyTransactions();
-
             //サービスの初期化
-            RegisterService = new RegisteringService(Library);
-            LendingService = new BorrowingService(Library, Transactions);
-            RackingService = new ArrangingService(Library, Reserves);
-            ReservingService = new ReservationService(Reserves, Transactions);
-            ReturnAcceptanceService = new BookReturnService(Library, Transactions, History);
-
-
-            //データの作成
-            RegisterService.RegisterBook();
-            RegisterService.RegisterBook();
-            RegisterService.RegisterBook();
-            RegisterService.RegisterBook();
-            RegisterService.RegisterBook();
-
-            Books = Library.Books;;
+            Library = library;
+            RegisterService = new RegisteringService(library);
+            LendingService = new BorrowingService(library, agreements);
+            RackingService = new ArrangingService(library, reserves);
+            ReservingService = new ReservationService(reserves, agreements);
+            ReturnAcceptanceService = new BookReturnService(library, agreements, histories);
         }
 
-
-        [TestMethod]
-        public void Test()
+        public void RunSchenerio()
         {
+            RegisterService.RegisterBook();
+            RegisterService.RegisterBook();
+            RegisterService.RegisterBook();
+            RegisterService.RegisterBook();
+            RegisterService.RegisterBook();
+
+            var Books = Library.FindBooks();
+
             //現在の貸出数が0
             Assert.AreEqual(0, LendingService.GetReturnAgreementsBy("user").Count());
 
@@ -74,10 +59,10 @@ namespace LibraryTest
 
 
             //ユーザがBook3を予約
-            ReservingService.ReserveBook(book3.Id, "user",DateTime.Parse("2020/04/05"));
+            ReservingService.ReserveBook(book3.Id, "user", DateTime.Parse("2020/04/05"));
 
             //職員がBook3を確保
-            var book=RackingService.FindBooksToPickToStorage().First();
+            var book = RackingService.FindBooksToPickToStorage().First();
             RackingService.PickToStorage(book);
 
             //ユーザがBook3を借りる
@@ -93,7 +78,7 @@ namespace LibraryTest
 
 
             //ユーザがBook4を予約しようとするが、Book1とBook2を延滞している
-            Assert.ThrowsException<ReservingException>(()=>ReservingService.ReserveBook(book4.Id, "user", DateTime.Parse("2020/04/20")));
+            Assert.ThrowsException<ReservingException>(() => ReservingService.ReserveBook(book4.Id, "user", DateTime.Parse("2020/04/20")));
 
 
 
@@ -103,7 +88,7 @@ namespace LibraryTest
             Assert.AreEqual(1, LendingService.GetReturnAgreementsBy("user").Count());
 
             //職員がBook1,2を本棚に返却
-            Assert.AreEqual(2,RackingService.FindBooksToPutToShelf().Count());
+            Assert.AreEqual(2, RackingService.FindBooksToPutToShelf().Count());
             foreach (var id in RackingService.FindBooksToPutToShelf()) RackingService.PutToShelf(id);
             Assert.AreEqual(0, RackingService.FindBooksToPutToShelf().Count());
 
@@ -138,12 +123,13 @@ namespace LibraryTest
             Assert.AreEqual(0, LendingService.GetReturnAgreementsBy("user2").Count());
 
             //5冊の本のうち、ユーザ2, 本棚2, バックヤード 1
-            Assert.AreEqual(1,Library.Books.Where(book=>book.BookStatus==BookStatus.InStorage).Count());
-            Assert.AreEqual(2,Library.Books.Where(book=>book.BookStatus==BookStatus.OnShelf).Count());
+            Assert.AreEqual(1, Library.FindBooks().Where(book => book.BookStatus == BookStatus.InStorage).Count());
+            Assert.AreEqual(2, Library.FindBooks().Where(book => book.BookStatus == BookStatus.OnShelf).Count());
 
 
 
         }
+
 
     }
 }
