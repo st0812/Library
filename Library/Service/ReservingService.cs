@@ -41,7 +41,8 @@ namespace Library.Service
 
         public void ReserveBook(string bookID, string userID,DateTime reserveDate)
         {
-            if (Agreements.FindOverduesBy(userID,reserveDate).Any()) throw new ReservingException("延滞本があります。");
+            if (Agreements.FindOverduesBy(userID,reserveDate).Any()) 
+                throw new ReservingException("延滞本があります。");
             Reservations.Add(new BookReservation(userID, bookID, reserveDate));
         }
 

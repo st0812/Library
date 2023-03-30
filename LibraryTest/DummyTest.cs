@@ -15,31 +15,17 @@ namespace LibraryTest
     [TestClass]
     public class DummyTest
     {
-        public IBooks Library { get; set; }
-        public IBookReservations Reserves { get; set; }
-        public ICheckoutHistories History { get; set; }
-        public IBookReturnAgreements Transactions { get; set; }
-
-        public Scenerio Scenerio { get; set; }
-
-
-        [TestInitialize]
-        public void Initialize()
-        {
-            //データの初期化
-            Library = new DummyBooks();
-            Reserves = new DummyBookReservations();
-            History = new DummyCheckoutHistories();
-            Transactions = new DummyBookReturnAgreements();
-
-            Scenerio = new Scenerio(Library, Reserves, History, Transactions);
-          
-        }
-
 
         [TestMethod]
         public void Test()
         {
+            var Library = new DummyBooks();
+            var Reserves = new DummyBookReservations();
+            var History = new DummyCheckoutHistories();
+            var Transactions = new DummyBookReturnAgreements();
+
+            var Scenerio = new Scenerio(Library, Reserves, History, Transactions);
+
             Scenerio.RunSchenerio();
         }
 

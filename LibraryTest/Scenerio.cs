@@ -126,6 +126,12 @@ namespace UnitTest
             Assert.AreEqual(1, Library.FindBooks().Where(book => book.BookStatus == BookStatus.InStorage).Count());
             Assert.AreEqual(2, Library.FindBooks().Where(book => book.BookStatus == BookStatus.OnShelf).Count());
 
+            //ユーザ3がBook3の予約をキャンセル
+            var reservations=ReservingService.FindReservationsBy("user3");
+            Assert.AreEqual(1, reservations.Count());
+            ReservingService.CancelReservation(reservations.First().ReservationId);
+             reservations = ReservingService.FindReservationsBy("user3");
+            Assert.AreEqual(0, reservations.Count());
 
 
         }

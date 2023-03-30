@@ -15,6 +15,8 @@ namespace Library.Repositories.Sqlite
         public SqliteCheckoutHistories(string connectionString)
         {
             _connectionString = new SqliteConnectionStringBuilder { DataSource = connectionString }.ToString();
+            _connectionString = connectionString;
+
             CreateTableIfNotExists();
         }
         private void CreateTableIfNotExists()

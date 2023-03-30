@@ -15,6 +15,7 @@ namespace Library.Repositories.Sqlite
         public SqliteBooks(string connectionString)
         {
             _connectionString = new SqliteConnectionStringBuilder { DataSource = connectionString }.ToString();
+            _connectionString = connectionString;
             CreateTableIfNotExists();
         }
 
